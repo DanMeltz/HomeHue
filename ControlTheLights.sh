@@ -1,22 +1,51 @@
 #!/bin/bash
 
+LIGHTS=(2 3 7 8 9 10)
 
 MACHINE="MacBookAir"
-
 source ./usernames.sh
+
+# Function to turn light ON
+light_on () {
+   	curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' http://192.168.1.2/api/$USERID/lights/$1/state
+   }
+
+# Function to turn light OFF
+light_off () {
+   	curl -H "Content-Type: application/json" -X PUT -d '{"on":false}' http://192.168.1.2/api/$USERID/lights/$1/state
+   }
 
 # Function to determine a light's state
 light_state () {
  	STATE=`curl http://192.168.1.2/api/$USERID/lights/$1 | jq '.state | .on'`
- 	#return $STATE
  }
 
- 
+# Function to toggle lights' state
+light_toggle () {
+	for thislight in "${LIGHTS[@]}"
+	do
+		echo $thislight
+		light_state $thislight
+		if [ $STATE == "false" ]
+			then
+			light_on $thislight
+		else
+			light_off $thislight
+		fi
+	done
+}
+
+
+light_toggle
+
+
+
+
 # Get info on the door light
 #curl http://192.168.1.2/api/$USERID/lights/3 | jq '.state | .on'
 
-light_state 3
-echo $STATE
+#light_state 3
+#echo $STATE
 
 # test the door light
 #curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' http://192.168.1.2/api/$USERID/lights/3/state
