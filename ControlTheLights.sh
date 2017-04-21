@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Not sure how the lights' humbers keep getting screwed up, but I'm listing 'em here for future screw ups.
 LIGHTS=(2 3 7 8 9 10)
 
+
+# Gonna need a userID. It's tied to the machine. You'll want to change the value of MACHINE to match whatever 
+# is in "usernames.sh" to get the correct userID
 MACHINE="MacBookAir"
 source ./usernames.sh
 
-# Function to turn light ON
+# Function to turn a light light ON
 light_on () {
    	curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' http://192.168.1.2/api/$USERID/lights/$1/state
    }
@@ -24,7 +28,6 @@ light_state () {
 light_toggle () {
 	for thislight in "${LIGHTS[@]}"
 	do
-		echo $thislight
 		light_state $thislight
 		if [ $STATE == "false" ]
 			then
