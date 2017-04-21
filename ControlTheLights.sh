@@ -5,18 +5,20 @@ LIGHTS=(2 3 7 8 9 10)
 
 
 # Gonna need a userID. It's tied to the machine. You'll want to change the value of MACHINE to match whatever 
-# is in "usernames.sh" to get the correct userID
+# is in "usernames.sh" to get the correct userID. The IP of the bridge is also in there. 
 MACHINE="MacBookAir"
 source ./usernames.sh
 
+echo $BRIDGEIP
+
 # Function to turn a light light ON
 light_on () {
-   	curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' http://192.168.1.2/api/$USERID/lights/$1/state
+   	curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' $BRIDGEIP/api/$USERID/lights/$1/state
    }
 
 # Function to turn light OFF
 light_off () {
-   	curl -H "Content-Type: application/json" -X PUT -d '{"on":false}' http://192.168.1.2/api/$USERID/lights/$1/state
+   	curl -H "Content-Type: application/json" -X PUT -d '{"on":false}' $BRIDGEIP/api/$USERID/lights/$1/state
    }
 
 # Function to determine a light's state
