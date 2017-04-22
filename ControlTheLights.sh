@@ -1,29 +1,22 @@
 #!/bin/bash
 
-# Not sure how the lights' humbers keep getting screwed up, but I'm listing 'em here for future screw ups.
-LIGHTS=(2 3 7 8 9 10)
-
-
-# Gonna need a userID. It's tied to the machine. You'll want to change the value of MACHINE to match whatever 
-# is in "usernames.sh" to get the correct userID. The IP of the bridge is also in there. 
-MACHINE="MacBookAir"
-source ./usernames.sh
-
-echo $BRIDGEIP
+# Gonna need a username. It's tied to the machine. You'll also need the IP of the bridge. These and more
+# are in conf.sh. So let's source that. 
+source ./conf.sh
 
 # Function to turn a light light ON
 light_on () {
-   	curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' $BRIDGEIP/api/$USERID/lights/$1/state
+   	curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' $BRIDGEIP/api/$USERNAME/lights/$1/state
    }
 
 # Function to turn light OFF
 light_off () {
-   	curl -H "Content-Type: application/json" -X PUT -d '{"on":false}' $BRIDGEIP/api/$USERID/lights/$1/state
+   	curl -H "Content-Type: application/json" -X PUT -d '{"on":false}' $BRIDGEIP/api/$USERNAME/lights/$1/state
    }
 
 # Function to determine a light's state
 light_state () {
- 	STATE=`curl http://192.168.1.2/api/$USERID/lights/$1 | jq '.state | .on'`
+ 	STATE=`curl http://192.168.1.2/api/$USERNAME/lights/$1 | jq '.state | .on'`
  }
 
 # Function to toggle lights' state
@@ -40,25 +33,30 @@ light_toggle () {
 	done
 }
 
+while [ true ]
+	do
+		read -rsn1 BUTTON
+		if [ $BUTTON == "a" ]
+			then
+			light_toggle
+		elif [ $BUTTON == "b" ]
+			then
+			echo "b"
+		elif [ $BUTTON == "c" ]
+			then
+			echo "c"
+		elif [ $BUTTON == "d" ]
+			then
+			echo "hi"
+		fi
+	done
 
-light_toggle
 
+
+
+# light_toggle
 
 
 
 # Get info on the door light
-#curl http://192.168.1.2/api/$USERID/lights/3 | jq '.state | .on'
-
-#light_state 3
-#echo $STATE
-
-# test the door light
-#curl -H "Content-Type: application/json" -X PUT -d '{"on":true}' http://192.168.1.2/api/$USERID/lights/3/state
-#sleep 1
-#curl -H "Content-Type: application/json" -X PUT -d '{"on":false}' http://192.168.1.2/api/$USERID/lights/3/state
-
-
-
-# {"state":{"on":false,"bri":178,"hue":627,"sat":247,"effect":"none","xy":[0.6606,0.3281],"ct":500,"alert":"none","colormode":"xy","reachable":true},"type":"Extended color light","name":"Door 1","modelid":"LCT001","manufacturername":"Philips","uniqueid":"00:17:88:01:00:b5:c4:45-0b","swversion":"5.23.1.13452"}%
-
-
+#curl http://192.168.1.2/api/$USERNAME/lights/3 | jq '.state | .on'
